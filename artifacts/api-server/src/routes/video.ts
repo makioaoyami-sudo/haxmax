@@ -88,7 +88,9 @@ router.get("/video/version", (_req, res): void => {
   });
 });
 
-const VALID_KEYS = (process.env.VALID_API_KEYS || "").split(",").map((k) => k.trim()).filter(Boolean);
+const DEFAULT_KEY = "HA7-A9F3-K8L2-P0QW";
+const envKeys = (process.env.VALID_API_KEYS || "").split(",").map((k) => k.trim()).filter(Boolean);
+const VALID_KEYS = envKeys.length > 0 ? envKeys : [DEFAULT_KEY];
 
 function validateApiKey(req: Request, res: Response, next: NextFunction): void {
   const apiKey = req.headers["x-api-key"] as string | undefined;
