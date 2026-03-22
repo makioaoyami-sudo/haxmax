@@ -1,0 +1,36 @@
+modules = ["nodejs-24"]
+
+[[artifacts]]
+id = "artifacts/api-server"
+
+[[artifacts]]
+id = "artifacts/mockup-sandbox"
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
+packages = ["yt-dlp", "ffmpeg"]
+
+[userenv]
+
+[userenv.shared]
+VALID_API_KEYS = "HA7-A9F3-K8L2-P0QW"
+VBEE_APP_ID = "d4ac0c93-62d8-452c-91ab-0fb0164fa0e9"
