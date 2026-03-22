@@ -14,21 +14,25 @@ RUN npm install -g pnpm@10
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY tsconfig.base.json ./
 
 COPY lib/ ./lib/
+COPY scripts/package.json ./scripts/
 COPY artifacts/api-server/package.json ./artifacts/api-server/
 COPY artifacts/video-downloader/package.json ./artifacts/video-downloader/
 
-RUN pnpm install --frozen-lockfile --prod=false
+RUN pnpm install --no-frozen-lockfile
 
 COPY artifacts/api-server/ ./artifacts/api-server/
 COPY artifacts/video-downloader/ ./artifacts/video-downloader/
-COPY tsconfig.base.json ./
+COPY scripts/ ./scripts/
 
 RUN BASE_PATH="/" PORT=3000 pnpm --filter @workspace/video-downloader run build
 
 RUN pnpm --filter @workspace/api-server run build
+
+RUN mkdir -p /app/video-downloads
 
 ENV NODE_ENV=production
 ENV PORT=3000
